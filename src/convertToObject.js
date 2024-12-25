@@ -7,16 +7,31 @@
  */
 function convertToObject(sourceString) {
   const stylesList = sourceString.replaceAll('\n', ' ').split(';');
-  const stylesObject = {};
   const filtredStylesList = stylesList.filter((val) => val.trim().length > 0);
 
-  for (let i = 0; i < filtredStylesList.length; i++) {
-    filtredStylesList[i] = filtredStylesList[i].split(':');
-    filtredStylesList[i][0] = filtredStylesList[i][0].trim();
-    filtredStylesList[i][1] = filtredStylesList[i][1].trim();
-    filtredStylesList[i][1] = filtredStylesList[i][1].replaceAll(', ', ',\n');
-    stylesObject[filtredStylesList[i][0]] = filtredStylesList[i][1];
+  const segregatedList = [];
+  const stylesObject = {};
+
+  function segregate(el) {
+    const splited = el.split(':');
+
+    for (let i = 0; i < splited.length; i++) {
+      if (splited[i].length > 0) {
+        segregatedList.push(splited[i].trim());
+      }
+    }
   }
+
+  function makeSegregatedObject(el, index, arr) {
+    for (let i = 0; i < arr.length; i++) {
+      if (i % 2 === 0) {
+        stylesObject[arr[i]] = arr[i + 1].replaceAll(', ', ',\n');
+      }
+    }
+  }
+
+  filtredStylesList.forEach(segregate);
+  segregatedList.forEach(makeSegregatedObject);
 
   return stylesObject;
 }
